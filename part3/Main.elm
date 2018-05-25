@@ -40,10 +40,10 @@ view model =
                 , span [ class "tagline" ] [ text "Like GitHub, but for Elm things." ]
                 ]
     in
-    div [ class "content" ]
-        [ elmHubHeader
-        , ul [ class "results" ] (List.map viewSearchResult model.results)
-        ]
+        div [ class "content" ]
+            [ elmHubHeader
+            , ul [ class "results" ] (List.map viewSearchResult model.results)
+            ]
 
 
 viewSearchResult result =
@@ -53,15 +53,20 @@ viewSearchResult result =
             [ text result.name ]
         , button
             -- TODO add an onClick handler that sends a "DELETE_BY_ID" msg
-            [ class "hide-result" ]
+            [ class "hide-result"
+            , onClick { operation = "DELETE_BY_ID", data = result.id }
+            ]
             [ text "X" ]
         ]
 
 
 update msg model =
-    -- TODO if msg.operation == "DELETE_BY_ID",
-    -- then return a new model without the given ID present anymore.
-    model
+    if msg.operation == "DELETE_BY_ID" then
+        { model | results = List.filter (\result -> result.id /= msg.data) model.results }
+    else
+        -- TODO if msg.operation == "DELETE_BY_ID",
+        -- then return a new model without the given ID present anymore.
+        model
 
 
 main =
